@@ -17,8 +17,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignId('topic_category_id')->constrained();
             $table->string('title');
-            $table->text('description');
-            $table->string('quote_url');
+            $table->text('body');
+            $table->string('image_url')->nullable();
+            $table->ipAddress();
             $table->timestamps();
             $table->softDeletes();
         });
