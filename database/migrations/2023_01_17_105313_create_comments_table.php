@@ -13,14 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('topic_comments', function (Blueprint $table) {
             $table->id();
             $table->foreignUuid('topic_id')->constrained();
-            $table->ipAddress();
             $table->text('comment');
             $table->string('image_url');
             $table->integer('plus_vote_count');
             $table->integer('minus_vote_count');
+            $table->ipAddress();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('topic_comments');
     }
 };
