@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Models\TopicComment;
+use App\Models\TopicCategory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Topic extends Model
 {
     use HasFactory;
-    use HasUuids;
+    use HasUlids;
 
     /**
      * 複数代入不可能な属性
@@ -26,5 +28,21 @@ class Topic extends Model
     public function uniqueIds()
     {
         return ['id'];
+    }
+
+    /**
+     * トピックを所有しているカテゴリを取得
+     */
+    public function topicCategory()
+    {
+        return $this->belongsTo(TopicCategory::class);
+    }
+
+    /**
+     * 所属するコメントを取得
+     */
+    public function comments()
+    {
+        return $this->hasMany(TopicComment::class);
     }
 }

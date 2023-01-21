@@ -6,14 +6,11 @@ use Exception;
 use App\Models\Topic;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreTopicRequest;
 
-/**
- * トピッククラス
- */
 class TopicController extends Controller
 {
     /**  トピック画像ルートディレクトリ名 */
@@ -22,35 +19,32 @@ class TopicController extends Controller
     const TOPIC_IMAGE_NAME = 'topic_image';
 
     /**
-     * 新トピックの保存
+     * 新トピックを投稿する
      *
      * @param  \Illuminate\Http\StoreTopicRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreTopicRequest $request)
     {
-        try {
+        DB::transaction(function () use ($request) {
+            $createdTopic = Topic::create([
+                'topic_category_id' => $request->topic_category_id,
+                'title' => $request->title,
+                'body' => $request->body,
+                'ip_address' => $request->ip()
+            ]);
 
-            DB::transaction(function () use ($request) {
+            if (!$request->file('topic_image')->isValid()) {
+                throw new Exception('トピック画像アップロードに異常が発生しました。');
+            }
 
-                $createdTopic = Topic::create([
-                    'topic_category_id' => $request->topic_category_id,
-                    'title' => $request->title,
-                    'body' => $request->body,
-                    'ip_address' => $request->ip()
-                ]);
+            Storage::putFileAs(
+                self::ROOT_DIRECTORY_NAME . '/' . $createdTopic->id,
+                $request->file('topic_image'),
+                self::TOPIC_IMAGE_NAME . '.' . $request->topic_image->extension()
+            );
+        });
 
-                Storage::putFileAs(
-                    self::ROOT_DIRECTORY_NAME . '/' . $createdTopic->id,
-                    $request->file('topic_image'),
-                    self::TOPIC_IMAGE_NAME . '.' . $request->topic_image->extension()
-                );
-            });
-        } catch (Exception $e) {
-            Log::error($e);
-            return response()->json([], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        return response()->json([], Response::HTTP_CREATED);
+        return response()->json(status: Response::HTTP_CREATED);
     }
 }

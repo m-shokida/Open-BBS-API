@@ -1,26 +1,105 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Topic;
 
 use Tests\TestCase;
+use App\Models\Topic;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\TopicController;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class TopicTest extends TestCase
+class TopicStoreTest extends TestCase
 {
     use RefreshDatabase;
 
+    const API_URI = '/api/topics';
+
     /**
-     * A basic feature test example.
+     * Undocumented function
+     *
+     * @param mixed $topicCategoryId
+     * @param mixed $title
+     * @param mixed $body
+     * @param mixed $topicImage
+     * @return void
+     * @dataProvider storing_provider
+     */
+    public function test_store($topicCategoryId, $title, $body, $topicImage): void
+    {
+        $oldIds = Topic::all()->pluck('id');
+
+        $this->postJson(
+            self::API_URI,
+            [
+                'topic_category_id' => $topicCategoryId,
+                'title' => $title,
+                'body' => $body,
+                'topic_image' => $topicImage
+            ]
+        )->assertCreated();
+
+        // データが追加されているか
+        $newIds = Topic::all()->pluck('id');
+        $this->assertSame($oldIds->count() + 1, $newIds->count());
+
+        // 適切なカラムへインサートされているか
+        $newTopic = Topic::whereNotIn('id', $oldIds)->first();
+        $this->assertSame($newTopic->topic_category_id, $topicCategoryId);
+        $this->assertSame($newTopic->title, $title);
+        $this->assertSame($newTopic->body, $body);
+        $this->assertSame($newTopic->ip_address, '127.0.0.1');
+
+        // 画像アップロード
+        $this->assertTrue(Storage::exists(TopicController::ROOT_DIRECTORY_NAME . '/' . $newTopic->id . '/' . TopicController::TOPIC_IMAGE_NAME . '.png'));
+    }
+
+    /**
+     * ストアデータプロバイダー
+     *
+     * @return array
+     */
+    public function storing_provider(): array
+    {
+        return [
+            'store data1' => [
+                1,
+                'タイトル1',
+                '本文1',
+                UploadedFile::fake()->image('image1.png')
+            ],
+            'store data2' => [
+                2,
+                'タイトル2',
+                '本文2',
+                UploadedFile::fake()->image('image2.png')
+            ],
+            'store data3' => [
+                3,
+                'タイトル3',
+                '本文3',
+                UploadedFile::fake()->image('image3.png')
+            ],
+            'store data4' => [
+                4,
+                'タイトル4',
+                '本文4',
+                UploadedFile::fake()->image('image4.png')
+            ]
+        ];
+    }
+
+    /**
+     * バリデーションエラーテスト
      * 
      * @return void
-     * @dataProvider storeValidationErrorDataProvider
+     * @dataProvider validation_error_data_provider
      */
-    public function test_store_validation($errorTargetKeys, $topicCategoryId, $title, $body, $topicImage)
+    public function test_validate($errorTargetKeys, $topicCategoryId, $title, $body, $topicImage)
     {
         $response = $this->postJson(
-            '/api/topics',
+            self::API_URI,
             [
                 'topic_category_id' => $topicCategoryId,
                 'title' => $title,
@@ -31,7 +110,12 @@ class TopicTest extends TestCase
         $response->assertJsonValidationErrors($errorTargetKeys);
     }
 
-    public function storeValidationErrorDataProvider(): array
+    /**
+     * バリデーションエラーデータプロバイダー
+     *
+     * @return array
+     */
+    public function validation_error_data_provider(): array
     {
         return [
             'The topic category id field is required.' => [
@@ -119,13 +203,13 @@ class TopicTest extends TestCase
                 UploadedFile::fake()->image('test.svg')
             ],
             'The topic image must be max:2024 kilobytes.' => [
-                ['topic_image' => 'The topic image must be max:2024 kilobytes.'],
+                ['topic_image' => 'The topic image must not be greater than 2024 kilobytes.'],
                 1,
                 "最初のトピックです",
                 '最初のトピックを投稿してみました',
-                UploadedFile::fake()->image('test.gif', 2025, 1)
+                UploadedFile::fake()->image('test.jpg')->size(2025)
             ],
-            
+
         ];
     }
 }
