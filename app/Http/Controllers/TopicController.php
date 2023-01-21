@@ -4,16 +4,13 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Topic;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\StoreTopicRequest;
 
-/**
- * トピッククラス
- */
 class TopicController extends Controller
 {
     /**  トピック画像ルートディレクトリ名 */
@@ -22,43 +19,32 @@ class TopicController extends Controller
     const TOPIC_IMAGE_NAME = 'topic_image';
 
     /**
-     * 新トピックの保存
+     * 新トピックを投稿する
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\StoreTopicRequest  $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreTopicRequest $request)
     {
-        $validated = $request->validate([
-            'topic_category_id' => 'bail|required|integer|exists:topic_categories,id',
-            'title' => 'bail|required|string|max:255',
-            'body' => 'bail|required|string',
-            'topic_image' => 'bail|sometimes|required|image|mimes:png,jpg,jpeg,gif|max:2048'
-        ]);
+        DB::transaction(function () use ($request) {
+            $createdTopic = Topic::create([
+                'topic_category_id' => $request->topic_category_id,
+                'title' => $request->title,
+                'body' => $request->body,
+                'ip_address' => $request->ip()
+            ]);
 
-        try {
+            if (!$request->file('topic_image')->isValid()) {
+                throw new Exception('トピック画像アップロードに異常が発生しました。');
+            }
 
-            DB::transaction(function () use ($request, $validated) {
+            Storage::putFileAs(
+                self::ROOT_DIRECTORY_NAME . '/' . $createdTopic->id,
+                $request->file('topic_image'),
+                self::TOPIC_IMAGE_NAME . '.' . $request->topic_image->extension()
+            );
+        });
 
-                $createdTopic = Topic::create([
-                    'topic_category_id' => $validated['topic_category_id'],
-                    'title' => $validated['title'],
-                    'body' => $validated['body'],
-                    'ip_address' => $request->ip()
-                ]);
-
-                Storage::putFileAs(
-                    self::ROOT_DIRECTORY_NAME . '/' . $createdTopic->id,
-                    $request->file('topic_image'),
-                    self::TOPIC_IMAGE_NAME . '.' . $request->topic_image->extension()
-                );
-
-            });
-        } catch (Exception $e) {
-            Log::error($e);
-            return response()->json([], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        return response()->json([], Response::HTTP_CREATED);
+        return response()->json(status: Response::HTTP_CREATED);
     }
 }

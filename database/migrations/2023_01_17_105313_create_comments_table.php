@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('topic_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('topic_id')->constrained();
+            $table->foreignUlid('topic_id')->constrained();
             $table->text('comment');
             $table->string('image_url');
             $table->integer('plus_vote_count');

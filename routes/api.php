@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\TopicCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,4 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('topics')->controller(TopicController::class)->group(function () {
     Route::post('/', 'store');
+});
+
+Route::prefix('topic-categories')->controller(TopicCategoryController::class)->group(function () {
+    Route::get('/', 'index');
 });

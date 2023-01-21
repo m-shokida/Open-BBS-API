@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('topics', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->ulid('id')->primary();
             $table->foreignId('topic_category_id')->constrained();
-            $table->string('title');
+            $table->string('title', 100);
             $table->text('body');
             $table->string('image_url')->nullable();
             $table->ipAddress();
