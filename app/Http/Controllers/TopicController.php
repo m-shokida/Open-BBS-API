@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Topic\ShowRequest;
+use App\Http\Requests\Topic\StoreRequest;
 use App\Models\Topic;
+use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\StoreTopicRequest;
+use Intervention\Image\Facades\Image;
 
 class TopicController extends Controller
 {
@@ -19,12 +20,12 @@ class TopicController extends Controller
     const TOPIC_IMAGE_NAME = 'topic_image';
 
     /**
-     * 新トピックを投稿する
+     * 新トピックを保存
      *
-     * @param  \Illuminate\Http\StoreTopicRequest  $request
+     * @param StoreRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreTopicRequest $request)
+    public function store(StoreRequest $request)
     {
         DB::transaction(function () use ($request) {
             $validated = $request->validated();
@@ -44,5 +45,16 @@ class TopicController extends Controller
         });
 
         return response()->json(status: Response::HTTP_CREATED);
+    }
+
+    /**
+     * トピックとそれに紐づくコメントを取得
+     *
+     * @param StoreRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(ShowRequest $request)
+    {
+        return response()->json(Topic::with('topicComments')->find($request->validated()['topic_id']));
     }
 }

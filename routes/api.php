@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('topics')->controller(TopicController::class)->group(function () {
     Route::post('/', 'store')->middleware('file.valid');
+    Route::get('/{topic_id}', 'show');
     Route::prefix('{topic_id}/comments')->controller(TopicCommentController::class)->group(function () {
         Route::post('/', 'store')->middleware('file.valid');
     });

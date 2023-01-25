@@ -22,6 +22,13 @@ class Topic extends Model
     protected $guarded = [];
 
     /**
+     * 配列に対して非表示にする必要がある属性
+     *
+     * @var array
+     */
+    protected $hidden = ['ip_address', 'created_at', 'updated_at', 'deleted_at'];
+
+    /**
      * 一意の識別子を受け取るカラムの取得
      *
      * @return array
@@ -42,9 +49,9 @@ class Topic extends Model
     /**
      * 所属するコメントを取得
      */
-    public function comments()
+    public function topicComments()
     {
-        return $this->hasMany(TopicComment::class);
+        return $this->hasMany(TopicComment::class)->orderBy('id');
     }
 
     /**
