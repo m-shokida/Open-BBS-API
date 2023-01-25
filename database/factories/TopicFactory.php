@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Topic;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,14 +11,24 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class TopicFactory extends Factory
 {
     /**
-     * Define the model's default state.
+     * モデルと対応するファクトリの名前
      *
-     * @return array<string, mixed>
+     * @var string
+     */
+    protected $model = Topic::class;
+
+    /**
+     * モデルのデフォルト状態の定義
+     *
+     * @return array
      */
     public function definition()
     {
         return [
-            //
+            'topic_category_id' => 1,
+            'title' => fake()->title,
+            'body' => fake()->text,
+            'ip_address' => '127.0.0.1'
         ];
     }
 }

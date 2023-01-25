@@ -24,7 +24,7 @@ class TopicStoreTest extends TestCase
      * @param mixed $body
      * @param mixed $topicImage
      * @return void
-     * @dataProvider storing_provider
+     * @dataProvider storing_data_provider
      */
     public function test_store($topicCategoryId, $title, $body, $topicImage): void
     {
@@ -44,15 +44,15 @@ class TopicStoreTest extends TestCase
         $newIds = Topic::all()->pluck('id');
         $this->assertSame($oldIds->count() + 1, $newIds->count());
 
-        // 適切なカラムへインサートされているか
+        // 追加されたデータは適切か
         $newTopic = Topic::whereNotIn('id', $oldIds)->first();
         $this->assertSame($newTopic->topic_category_id, $topicCategoryId);
         $this->assertSame($newTopic->title, $title);
         $this->assertSame($newTopic->body, $body);
         $this->assertSame($newTopic->ip_address, '127.0.0.1');
 
-        // 画像アップロード
-        $this->assertTrue(Storage::exists(TopicController::ROOT_DIRECTORY_NAME . '/' . $newTopic->id . '/' . TopicController::TOPIC_IMAGE_NAME . '.png'));
+        // 画像が適切な場所にアップロードされているか
+        Storage::assertExists(TopicController::ROOT_DIRECTORY_NAME . '/' . $newTopic->id . '/' . TopicController::TOPIC_IMAGE_NAME . '.png');
     }
 
     /**
@@ -60,7 +60,7 @@ class TopicStoreTest extends TestCase
      *
      * @return array
      */
-    public function storing_provider(): array
+    public function storing_data_provider(): array
     {
         return [
             'store data1' => [
@@ -98,7 +98,7 @@ class TopicStoreTest extends TestCase
      */
     public function test_validate($errorTargetKeys, $topicCategoryId, $title, $body, $topicImage)
     {
-        $response = $this->postJson(
+        $this->postJson(
             self::API_URI,
             [
                 'topic_category_id' => $topicCategoryId,
@@ -106,8 +106,7 @@ class TopicStoreTest extends TestCase
                 'body' => $body,
                 'topic_image' => $topicImage
             ]
-        );
-        $response->assertJsonValidationErrors($errorTargetKeys);
+        )->assertJsonValidationErrors($errorTargetKeys);
     }
 
     /**

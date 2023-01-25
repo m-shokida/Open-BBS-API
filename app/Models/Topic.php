@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\TopicComment;
 use App\Models\TopicCategory;
+use Database\Factories\TopicFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -44,5 +45,15 @@ class Topic extends Model
     public function comments()
     {
         return $this->hasMany(TopicComment::class);
+    }
+
+    /**
+     * モデルの新ファクトリ・インスタンスの生成
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return TopicFactory::new();
     }
 }

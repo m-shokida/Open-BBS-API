@@ -27,16 +27,14 @@ class TopicController extends Controller
     public function store(StoreTopicRequest $request)
     {
         DB::transaction(function () use ($request) {
+            $validated = $request->validated();
+
             $createdTopic = Topic::create([
-                'topic_category_id' => $request->topic_category_id,
-                'title' => $request->title,
-                'body' => $request->body,
+                'topic_category_id' => $validated['topic_category_id'],
+                'title' => $validated['title'],
+                'body' => $validated['body'],
                 'ip_address' => $request->ip()
             ]);
-
-            if (!$request->file('topic_image')->isValid()) {
-                throw new Exception('トピック画像アップロードに異常が発生しました。');
-            }
 
             Storage::putFileAs(
                 self::ROOT_DIRECTORY_NAME . '/' . $createdTopic->id,
