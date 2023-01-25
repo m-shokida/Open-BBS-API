@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "5a97cf862fc9ad42469f1aa48b2c9dd0",
+=======
+    "content-hash": "ccbd816a07b206f971042295b899d1ba",
+>>>>>>> parent of d0e1e4a... Breeze install
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -6379,6 +6383,7 @@
             "time": "2020-07-09T08:09:16+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "jean85/pretty-package-versions",
             "version": "2.0.5",
             "source": {
@@ -6499,6 +6504,8 @@
             "time": "2023-01-17T14:08:34+00:00"
         },
         {
+=======
+>>>>>>> parent of d0e1e4a... Breeze install
             "name": "laravel/pint",
             "version": "v1.4.0",
             "source": {
