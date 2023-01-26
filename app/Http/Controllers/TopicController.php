@@ -10,12 +10,9 @@ use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
 
 class TopicController extends Controller
 {
-    /**  トピック画像ルートディレクトリ名 */
-    const ROOT_DIRECTORY_NAME = 'topics';
     /** トピック画像名 */
     const TOPIC_IMAGE_NAME = 'topic_image';
 
@@ -37,10 +34,9 @@ class TopicController extends Controller
                 'ip_address' => $request->ip()
             ]);
 
-            Storage::putFileAs(
-                self::ROOT_DIRECTORY_NAME . '/' . $createdTopic->id,
-                $request->file('topic_image'),
-                self::TOPIC_IMAGE_NAME . '.' . $request->topic_image->extension()
+            Storage::put(
+                self::ROOT_IMAGE_DIRECTORY . '/' . $createdTopic->id . '/' . self::TOPIC_IMAGE_NAME . '.' . self::UPLOAD_IMAGE_FORMAT,
+                $this->convertUpdatedImageToJpg($request->file('topic_image')),
             );
         });
 

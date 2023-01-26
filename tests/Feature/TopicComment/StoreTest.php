@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\TopicComment;
 
+use App\Http\Controllers\TopicCommentController;
 use App\Models\Topic;
 use App\Models\TopicComment;
 use Closure;
@@ -65,7 +66,8 @@ class StoreTest extends TestCase
         $this->assertNull($newComment->deleted_at);
 
         // 画像が適切な場所にアップロードされているか
-        Storage::assertExists('topics/' . $newComment->topic_id . '/comments/' . $newComment->id . '.' . $image->extension());
+        $commentImageDir = TopicCommentController::ROOT_IMAGE_DIRECTORY . '/' . $newComment->topic_id . '/' . TopicCommentController::COMMENT_IMAGE_DIRECTORY;
+        Storage::assertExists($commentImageDir . '/' . $newComment->id . '.' . TopicCommentController::UPLOAD_IMAGE_FORMAT);
     }
 
 

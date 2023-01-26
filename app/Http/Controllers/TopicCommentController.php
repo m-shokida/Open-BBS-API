@@ -13,6 +13,9 @@ use Illuminate\Support\Str;
 
 class TopicCommentController extends Controller
 {
+    /** コメント画像ディレクトリ名 */
+    const COMMENT_IMAGE_DIRECTORY = 'comment';
+
     /**
      * 新コメントを保存する
      *
@@ -29,10 +32,9 @@ class TopicCommentController extends Controller
             'ip_address' => $request->ip()
         ]);
 
-        Storage::putFileAs(
-            sprintf('topics/%s/comments', $createdComment->topic_id),
-            $request->file('image'),
-            $createdComment->id . '.' . $validated['image']->extension()
+        Storage::put(
+            sprintf('%s/%s/%s/%s', self::ROOT_IMAGE_DIRECTORY, $createdComment->topic_id, self::COMMENT_IMAGE_DIRECTORY, $createdComment->id . '.' . self::UPLOAD_IMAGE_FORMAT),
+            $this->convertUpdatedImageToJpg($request->file('image')),
         );
 
         return response()->json(status: Response::HTTP_CREATED);
