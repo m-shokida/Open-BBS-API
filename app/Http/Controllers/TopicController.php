@@ -36,7 +36,7 @@ class TopicController extends Controller
 
             Storage::put(
                 self::ROOT_IMAGE_DIRECTORY . '/' . $createdTopic->id . '/' . self::TOPIC_IMAGE_NAME . '.' . self::UPLOAD_IMAGE_FORMAT,
-                $this->convertUpdatedImageToJpg($request->file('topic_image')),
+                $this->convertUpdatedImageToJpg($request->file('image'))
             );
         });
 

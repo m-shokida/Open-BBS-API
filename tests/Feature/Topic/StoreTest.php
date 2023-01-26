@@ -36,7 +36,7 @@ class StoreTest extends TestCase
                 'topic_category_id' => $topicCategoryId,
                 'title' => $title,
                 'body' => $body,
-                'topic_image' => $topicImage
+                'image' => $topicImage
             ]
         )->assertCreated();
 
@@ -65,26 +65,26 @@ class StoreTest extends TestCase
         return [
             'store data1' => [
                 1,
-                'タイトル1',
-                '本文1',
+                fake()->title(),
+                fake()->text(),
                 UploadedFile::fake()->image('image1.png')
             ],
             'store data2' => [
                 2,
-                'タイトル2',
-                '本文2',
+                fake()->title(),
+                fake()->text(),
                 UploadedFile::fake()->image('image2.jpg')
             ],
             'store data3' => [
                 3,
-                'タイトル3',
-                '本文3',
+                fake()->title(),
+                fake()->text(),
                 UploadedFile::fake()->image('image3.jpeg')
             ],
             'store data4' => [
                 4,
-                'タイトル4',
-                '本文4',
+                fake()->title(),
+                fake()->text(),
                 UploadedFile::fake()->image('image4.gif')
             ]
         ];
@@ -104,7 +104,7 @@ class StoreTest extends TestCase
                 'topic_category_id' => $topicCategoryId,
                 'title' => $title,
                 'body' => $body,
-                'topic_image' => $topicImage
+                'image' => $topicImage
             ]
         )->assertJsonValidationErrors($errorTargetKeys);
     }
@@ -117,95 +117,95 @@ class StoreTest extends TestCase
     public function validation_error_data_provider(): array
     {
         return [
-            'The topic category id field is required.' => [
+            'topic_category_id : required' => [
                 ['topic_category_id' => 'The topic category id field is required.'],
                 null,
-                '最初のトピックです',
-                '最初のトピックを投稿してみました',
+                fake()->title(),
+                fake()->text(),
                 UploadedFile::fake()->image('test.gif')
             ],
-            'The topic category id must be an integer.' => [
+            'topic_category_id : integer' => [
                 ['topic_category_id' => 'The topic category id must be an integer.'],
                 'a',
-                '最初のトピックです',
-                '最初のトピックを投稿してみました',
+                fake()->title(),
+                fake()->text(),
                 UploadedFile::fake()->image('test.gif')
             ],
-            'The selected topic category id is invalid.' => [
+            'topic_category_id : exists' => [
                 ['topic_category_id' => 'The selected topic category id is invalid.'],
                 13,
-                '最初のトピックです',
-                '最初のトピックを投稿してみました',
+                fake()->title(),
+                fake()->text(),
                 UploadedFile::fake()->image('test.gif')
             ],
-            'The title field is required.' => [
+            'title : required' => [
                 ['title' => 'The title field is required.'],
                 1,
                 null,
-                '最初のトピックを投稿してみました',
+                fake()->text(),
                 UploadedFile::fake()->image('test.gif')
             ],
-            'The title must be a string.' => [
+            'title : string' => [
                 ['title' => 'The title must be a string.'],
                 1,
                 1,
-                '最初のトピックを投稿してみました',
+                fake()->text(),
                 UploadedFile::fake()->image('test.gif')
             ],
-            'The title must not be greater than 100 characters.' => [
+            'title : max:100' => [
                 ['title' => 'The title must not be greater than 100 characters.'],
                 1,
                 str_repeat("*", 101),
-                '最初のトピックを投稿してみました',
+                fake()->text(),
                 UploadedFile::fake()->image('test.gif')
             ],
-            'The body field is required.' => [
+            'body : required' => [
                 ['body' => 'The body field is required.'],
                 1,
-                "最初のトピックです",
+                fake()->title(),
                 null,
                 UploadedFile::fake()->image('test.gif')
             ],
-            'The body must be a string.' => [
+            'body : string' => [
                 ['body' => 'The body must be a string.'],
                 1,
-                "最初のトピックです",
+                fake()->title(),
                 1,
                 UploadedFile::fake()->image('test.gif')
             ],
-            'The body must not be greater than 1000 characters.' => [
+            'body : max:1000' => [
                 ['body' => 'The body must not be greater than 1000 characters.'],
                 1,
-                "最初のトピックです",
+                fake()->title(),
                 str_repeat("*", 1001),
                 UploadedFile::fake()->image('test.gif')
             ],
-            'The topic image field is required.' => [
-                ['topic_image' => 'The topic image field is required.'],
+            'image : required' => [
+                ['image' => 'The image field is required.'],
                 1,
-                "最初のトピックです",
-                '最初のトピックを投稿してみました',
+                fake()->title(),
+                fake()->text(),
                 null
             ],
-            'The topic image must be an image.' => [
-                ['topic_image' => 'The topic image must be an image.'],
+            'image : image' => [
+                ['image' => 'The image must be an image.'],
                 1,
-                "最初のトピックです",
-                '最初のトピックを投稿してみました',
+                fake()->title(),
+                fake()->text(),
                 UploadedFile::fake()->create('test.pdf')
             ],
-            'The topic image must be a file of type: png, jpg, jpeg, gif.' => [
-                ['topic_image' => 'The topic image must be a file of type: png, jpg, jpeg, gif.'],
+            'image : mimes:png,jpg,jpeg,gif' => [
+                ['image' => 'The image must be a file of type: png, jpg, jpeg, gif.'],
                 1,
-                "最初のトピックです",
-                '最初のトピックを投稿してみました',
+                fake()->title(),
+                fake()->text(),
                 UploadedFile::fake()->image('test.svg')
             ],
-            'The topic image must be max:2024 kilobytes.' => [
-                ['topic_image' => 'The topic image must not be greater than 2024 kilobytes.'],
+            'image : max:2024' => [
+                ['image' => 'The image must not be greater than 2024 kilobytes.'],
                 1,
-                "最初のトピックです",
-                '最初のトピックを投稿してみました',
+                fake()->title(),
+                fake()->text(),
                 UploadedFile::fake()->image('test.jpg')->size(2025)
             ],
 
