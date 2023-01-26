@@ -10,7 +10,7 @@ use App\Http\Controllers\TopicController;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class TopicStoreTest extends TestCase
+class StoreTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -52,7 +52,7 @@ class TopicStoreTest extends TestCase
         $this->assertSame($newTopic->ip_address, '127.0.0.1');
 
         // 画像が適切な場所にアップロードされているか
-        Storage::assertExists(TopicController::ROOT_DIRECTORY_NAME . '/' . $newTopic->id . '/' . TopicController::TOPIC_IMAGE_NAME . '.png');
+        Storage::assertExists(TopicController::ROOT_IMAGE_DIRECTORY . '/' . $newTopic->id . '/' . TopicController::TOPIC_IMAGE_NAME . '.' . TopicController::UPLOAD_IMAGE_FORMAT);
     }
 
     /**
@@ -73,19 +73,19 @@ class TopicStoreTest extends TestCase
                 2,
                 'タイトル2',
                 '本文2',
-                UploadedFile::fake()->image('image2.png')
+                UploadedFile::fake()->image('image2.jpg')
             ],
             'store data3' => [
                 3,
                 'タイトル3',
                 '本文3',
-                UploadedFile::fake()->image('image3.png')
+                UploadedFile::fake()->image('image3.jpeg')
             ],
             'store data4' => [
                 4,
                 'タイトル4',
                 '本文4',
-                UploadedFile::fake()->image('image4.png')
+                UploadedFile::fake()->image('image4.gif')
             ]
         ];
     }

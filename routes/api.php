@@ -17,10 +17,6 @@ use App\Http\Controllers\TopicCategoryController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::prefix('topics')->controller(TopicController::class)->group(function () {
     Route::post('/', 'store')->middleware('file.valid');
     Route::get('/{topic_id}', 'show');

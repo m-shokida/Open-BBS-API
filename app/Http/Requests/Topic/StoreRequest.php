@@ -27,7 +27,7 @@ class StoreRequest extends FormRequest
             'topic_category_id' => ['required', 'integer', 'exists:topic_categories,id'],
             'title' => ['required', 'string', 'max:100'],
             'body' => ['required', 'string', 'max:1000'],
-            'topic_image' => ['sometimes', 'required', 'image', 'mimes:png,jpg,jpeg,gif', 'max:2024'],
+            'topic_image' => ['sometimes', 'required', 'image', 'mimes:png,jpg,jpeg,gif', 'max:2024']
         ];
     }
 }
