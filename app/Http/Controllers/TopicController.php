@@ -49,18 +49,6 @@ class TopicController extends Controller
     }
 
     /**
-     * トピックとそれに紐づくコメントを取得
-     *
-     * @param StoreRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show(ShowRequest $request)
-    {
-        return response()->json(Topic::with('topicComments')->find($request->validated()['topic_id']));
-    }
-
-
-    /**
      * Undocumented function
      *
      * @param Request $request

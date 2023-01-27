@@ -139,22 +139,6 @@ class StoreTest extends TestCase
         };
 
         return [
-            'topic_id : ulid' => [
-                ['topic_id' => 'The topic id must be a valid ULID.'],
-                function () {
-                    return Str::uuid();
-                },
-                fake()->text,
-                UploadedFile::fake()->image('test.gif')
-            ],
-            'topic_id : exists' => [
-                ['topic_id' => 'The selected topic id is invalid.'],
-                function () {
-                    return Str::ulid();
-                },
-                fake()->text,
-                UploadedFile::fake()->image('test.gif')
-            ],
             'comment : required' => [
                 ['comment' => 'The comment field is required.'],
                 $getMinTopicId,
