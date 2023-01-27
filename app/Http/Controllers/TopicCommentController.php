@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TopicComment\StoreRequest;
+use App\Models\Topic;
 use App\Models\TopicComment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -23,13 +24,13 @@ class TopicCommentController extends Controller
      * @param StoreRequest $request
      * @return void
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request, Topic $topic)
     {
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($request, $topic) {
             $validated = $request->validated();
 
             $createdComment = TopicComment::create([
-                'topic_id' => $validated['topic_id'],
+                'topic_id' => $topic->id,
                 'comment' => $validated['comment'],
                 'ip_address' => $request->ip()
             ]);
