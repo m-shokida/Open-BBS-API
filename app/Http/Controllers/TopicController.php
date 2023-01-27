@@ -6,15 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Topic\ShowRequest;
 use App\Http\Requests\Topic\StoreRequest;
 use App\Models\Topic;
+use App\Models\TopicCategory;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class TopicController extends Controller
 {
     /** トピック画像名 */
     const TOPIC_IMAGE_NAME = 'topic_image';
+
+    const MAX_ITEM_PER_PAGE = 50;
 
     /**
      * 新トピックを保存
@@ -52,5 +57,18 @@ class TopicController extends Controller
     public function show(ShowRequest $request)
     {
         return response()->json(Topic::with('topicComments')->find($request->validated()['topic_id']));
+    }
+
+
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @param TopicCategory $topicCategory
+     * @return void
+     */
+    public function filterByCategory(Request $request, TopicCategory $topicCategory)
+    {
+        return response()->json(Topic::where('topic_category_id', $topicCategory->id)->orderBy('id', 'desc')->paginate(self::MAX_ITEM_PER_PAGE));
     }
 }

@@ -22,7 +22,7 @@ class TopicCategory extends Model
      *
      * @var array
      */
-    protected $hidden = ['id'];
+    protected $hidden = [];
 
     /**
      * 所属するトピックを取得

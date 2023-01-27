@@ -49,6 +49,7 @@ class ShowTest extends TestCase
             'title' => $topic['title'],
             'body' => $topic['body'],
             'image_url' => $topic['image_url'],
+            'created_at' => $topic['created_at'],
             'topic_comments' => TopicComment::where('topic_id', $topic['id'])->orderBy('id')->get()->toArray()
         ])->assertJsonStructure([
             'topic_comments' => [
