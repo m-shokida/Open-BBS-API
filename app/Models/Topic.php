@@ -26,7 +26,7 @@ class Topic extends Model
      *
      * @var array
      */
-    protected $hidden = ['ip_address', 'created_at', 'updated_at', 'deleted_at'];
+    protected $hidden = ['ip_address', 'updated_at', 'deleted_at'];
 
     /**
      * 一意の識別子を受け取るカラムの取得

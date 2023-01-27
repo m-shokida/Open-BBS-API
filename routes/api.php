@@ -20,6 +20,7 @@ use App\Http\Controllers\TopicCategoryController;
 Route::prefix('topics')->controller(TopicController::class)->group(function () {
     Route::post('/', 'store')->middleware('file.valid');
     Route::get('/{topic_id}', 'show');
+    Route::get('/category/{topicCategory}', 'filterByCategory');
     Route::prefix('{topic_id}/comments')->controller(TopicCommentController::class)->group(function () {
         Route::post('/', 'store')->middleware('file.valid');
     });
