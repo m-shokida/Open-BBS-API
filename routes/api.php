@@ -25,6 +25,7 @@ Route::prefix('topics')->controller(TopicController::class)->group(function () {
     });
     Route::get('/category/{topicCategory}', 'filterByCategory');
     Route::prefix('{topic}/comments')->controller(TopicCommentController::class)->group(function () {
+        Route::get('/', 'index');
         Route::post('/', 'store')->middleware('file.valid');
     });
 });

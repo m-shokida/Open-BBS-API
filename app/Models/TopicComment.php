@@ -23,7 +23,7 @@ class TopicComment extends Model
      *
      * @var array
      */
-    protected $hidden = ['topic_id', 'ip_address', 'created_at', 'updated_at', 'deleted_at'];
+    protected $hidden = ['ip_address', 'updated_at', 'deleted_at'];
 
     /**
      * モデルの配列形態に追加するアクセサ

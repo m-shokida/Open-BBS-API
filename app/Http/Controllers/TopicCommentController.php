@@ -18,11 +18,26 @@ class TopicCommentController extends Controller
     /** コメント画像ディレクトリ名 */
     const COMMENT_IMAGE_DIRECTORY = 'comment';
 
+    /** ページ毎表示件数 */
+    const MAX_ITEM_PER_PAGE = 100;
+
+    /**
+     * コメント一覧を取得する
+     *
+     * @param Request $request
+     * @param Topic $topic
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Topic $topic)
+    {
+        return response()->json(TopicComment::where('topic_id', $topic->id)->orderBy('id')->paginate(self::MAX_ITEM_PER_PAGE));
+    }
+
     /**
      * 新コメントを保存する
      *
      * @param StoreRequest $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreRequest $request, Topic $topic)
     {
