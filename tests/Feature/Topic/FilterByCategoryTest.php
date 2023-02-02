@@ -32,7 +32,7 @@ class FilterByCategoryTest extends TestCase
      *
      * @return void
      * @dataProvider exact_topics_data_provider
-     * 
+     *
      */
     public function test_get_exact_topics(Closure $getCategoryId, Closure $getExactTopics)
     {
@@ -87,7 +87,7 @@ class FilterByCategoryTest extends TestCase
                     return TopicCategory::min('id');
                 },
                 function () {
-                    return Topic::where('topic_category_id', TopicCategory::min('id'))->orderBy('id', 'desc')
+                    return Topic::where('topic_category_id', TopicCategory::min('id'))->oldest()
                         ->offset(0)->limit(TopicController::MAX_ITEM_PER_PAGE)->get()->toArray();
                 },
             ],
@@ -96,7 +96,7 @@ class FilterByCategoryTest extends TestCase
                     return TopicCategory::max('id');
                 },
                 function () {
-                    return Topic::where('topic_category_id', TopicCategory::max('id'))->orderBy('id', 'desc')
+                    return Topic::where('topic_category_id', TopicCategory::max('id'))->oldest()
                         ->offset(0)->limit(TopicController::MAX_ITEM_PER_PAGE)->get()->toArray();
                 },
             ],
@@ -132,7 +132,7 @@ class FilterByCategoryTest extends TestCase
                     return fake()->text;
                 }
             ],
-            'categoryId : unmatch' => [
+            'categoryId : mismatched' => [
                 function () {
                     return TopicCategory::max('id') + 1;
                 }

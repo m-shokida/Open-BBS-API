@@ -58,8 +58,8 @@ class indexTest extends TestCase
             );
 
         // 指定データが含まれていること
-        $exptecCommets = TopicComment::where('topic_id', $topic->id)->orderBy('id')->offset(0)->limit(TopicCommentController::MAX_ITEM_PER_PAGE)->get()->toArray();
-        $response->assertJsonPath('data', $exptecCommets);
+        $targetComments = TopicComment::where('topic_id', $topic->id)->oldest()->offset(0)->limit(TopicCommentController::MAX_ITEM_PER_PAGE)->get()->toArray();
+        $response->assertJsonPath('data', $targetComments);
     }
 
     /**

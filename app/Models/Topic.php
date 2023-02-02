@@ -51,7 +51,7 @@ class Topic extends Model
      */
     public function topicComments()
     {
-        return $this->hasMany(TopicComment::class)->orderBy('id');
+        return $this->hasMany(TopicComment::class);
     }
 
     /**
@@ -62,5 +62,24 @@ class Topic extends Model
     protected static function newFactory()
     {
         return TopicFactory::new();
+    }
+
+    /**
+     * 新トピックを生成する
+     *
+     * @param int $topicCategoryId
+     * @param string $title
+     * @param string $body
+     * @param string $idAddress
+     * @return self
+     */
+    public function createNewTopic(int $topicCategoryId, string $title, string $body, string $idAddress): self
+    {
+        return $this->create([
+            'topic_category_id' => $topicCategoryId,
+            'title' => $title,
+            'body' => $body,
+            'ip_address' => $idAddress
+        ]);
     }
 }
