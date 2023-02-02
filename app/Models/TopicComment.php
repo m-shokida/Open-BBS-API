@@ -33,7 +33,7 @@ class TopicComment extends Model
     protected $appends = ['comment_id'];
 
     /**
-     * Undocumented function
+     * コメントIDを取得する
      *
      * @return void
      */
@@ -43,7 +43,7 @@ class TopicComment extends Model
     }
 
     /**
-     * コメントを諸州しているトピックを取得
+     * コメントを所有しているトピックを取得
      */
     public function topic()
     {
@@ -58,5 +58,22 @@ class TopicComment extends Model
     protected static function newFactory()
     {
         return TopicCommentFactory::new();
+    }
+
+    /**
+     * 新コメントを生成する
+     *
+     * @param string $topicId
+     * @param string $comment
+     * @param string $ipAddress
+     * @return TopicComment
+     */
+    public function createNewComment(string $topicId, string $comment, string $ipAddress): self
+    {
+        return $this->create([
+            'topic_id' => $topicId,
+            'comment' => $comment,
+            'ip_address' => $ipAddress
+        ]);
     }
 }

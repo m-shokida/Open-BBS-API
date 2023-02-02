@@ -2,19 +2,20 @@
 
 namespace Tests\Feature\TopicComment;
 
-use App\Http\Controllers\TopicCommentController;
-use App\Models\Topic;
-use App\Models\TopicComment;
 use Closure;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
+use App\Models\Topic;
+use Illuminate\Support\Str;
+use App\Models\TopicComment;
 use Illuminate\Http\Response;
 use Illuminate\Http\Testing\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use App\Http\Controllers\TopicCommentController;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Services\ImageUpload\CommentImageUploadService;
 
 class StoreTest extends TestCase
 {
@@ -66,8 +67,8 @@ class StoreTest extends TestCase
         $this->assertNull($newComment->deleted_at);
 
         // 画像が適切な場所にアップロードされているか
-        $commentImageDir = TopicCommentController::ROOT_IMAGE_DIRECTORY . '/' . $newComment->topic_id . '/' . TopicCommentController::COMMENT_IMAGE_DIRECTORY;
-        Storage::assertExists($commentImageDir . '/' . $newComment->id . '.' . TopicCommentController::UPLOAD_IMAGE_FORMAT);
+        $commentImageDir = 'topics/' . $newComment->topic_id . '/' . CommentImageUploadService::COMMENT_IMAGE_DIRECTORY;
+        Storage::assertExists($commentImageDir . '/' . $newComment->id . '.jpg');
     }
 
 

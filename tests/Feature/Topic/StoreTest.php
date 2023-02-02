@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\TopicController;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Services\ImageUpload\TopicImageUploadService;
 
 class StoreTest extends TestCase
 {
@@ -52,7 +53,7 @@ class StoreTest extends TestCase
         $this->assertSame($newTopic->ip_address, '127.0.0.1');
 
         // 画像が適切な場所にアップロードされているか
-        Storage::assertExists(TopicController::ROOT_IMAGE_DIRECTORY . '/' . $newTopic->id . '/' . TopicController::TOPIC_IMAGE_NAME . '.' . TopicController::UPLOAD_IMAGE_FORMAT);
+        Storage::assertExists('topics/' . $newTopic->id . '/' . TopicImageUploadService::TOPIC_IMAGE_NAME . '.jpg');
     }
 
     /**
