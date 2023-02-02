@@ -15,6 +15,6 @@ class TopicCategoryController extends Controller
      */
     public function index()
     {
-        return response()->json(TopicCategory::orderBy('order')->get());
+        return response()->json(TopicCategory::oldest('id')->get());
     }
 }
