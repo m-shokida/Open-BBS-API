@@ -65,6 +65,17 @@ class Topic extends Model
     }
 
     /**
+     * カテゴリにスコープを設定
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCategory($query, $categoryId)
+    {
+        return $query->where('topic_category_id', $categoryId);
+    }
+
+    /**
      * 新トピックを生成する
      *
      * @param int $topicCategoryId

@@ -36,10 +36,10 @@ class FilterByCategoryTest extends TestCase
      */
     public function test_get_exact_topics(Closure $getCategoryId, Closure $getExactTopics)
     {
-        Topic::factory()->count(TopicController::MAX_ITEM_PER_PAGE + 1)->create([
+        Topic::factory()->count(TopicController::ITEMS_PER_PAGE + 1)->create([
             'topic_category_id' => TopicCategory::min('id')
         ]);
-        Topic::factory()->count(TopicController::MAX_ITEM_PER_PAGE + 1)->create([
+        Topic::factory()->count(TopicController::ITEMS_PER_PAGE + 1)->create([
             'topic_category_id' => TopicCategory::max('id')
         ]);
 
@@ -50,7 +50,7 @@ class FilterByCategoryTest extends TestCase
         )->assertOk();
 
         // 一ページ毎最大トピックス数
-        $response->assertJsonCount(TopicController::MAX_ITEM_PER_PAGE, 'data');
+        $response->assertJsonCount(TopicController::ITEMS_PER_PAGE, 'data');
 
         // 対象カテゴリに所属する
         $response_data = json_decode($response->getContent(), true)['data'];
@@ -88,7 +88,7 @@ class FilterByCategoryTest extends TestCase
                 },
                 function () {
                     return Topic::where('topic_category_id', TopicCategory::min('id'))->oldest()
-                        ->offset(0)->limit(TopicController::MAX_ITEM_PER_PAGE)->get()->toArray();
+                        ->offset(0)->limit(TopicController::ITEMS_PER_PAGE)->get()->toArray();
                 },
             ],
             'topic2' => [
@@ -97,7 +97,7 @@ class FilterByCategoryTest extends TestCase
                 },
                 function () {
                     return Topic::where('topic_category_id', TopicCategory::max('id'))->oldest()
-                        ->offset(0)->limit(TopicController::MAX_ITEM_PER_PAGE)->get()->toArray();
+                        ->offset(0)->limit(TopicController::ITEMS_PER_PAGE)->get()->toArray();
                 },
             ],
         ];
