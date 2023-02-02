@@ -7,6 +7,7 @@ use App\Models\TopicCategory;
 use Illuminate\Http\Response;
 use App\Services\TopicService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Topic\StoreRequest;
 
@@ -31,12 +32,12 @@ class TopicController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $this->topicService->createNewTopic($request->validated(), $request->ip(), $request->file('image'));
+        $this->topicService->createNewTopic(array_merge($request->validated(), ['ip_address' => $request->ip()]), $request->file('image'));
         return response()->json(status: Response::HTTP_CREATED);
     }
 
     /**
-     * カテゴリ別トピックスを取得する
+     * カテゴリ指定でトピックスを取得する
      *
      * @param TopicCategory $topicCategory
      * @return \Illuminate\Http\JsonResponse
