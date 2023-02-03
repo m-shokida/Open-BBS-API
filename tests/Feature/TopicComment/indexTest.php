@@ -50,7 +50,7 @@ class indexTest extends TestCase
                 fn (AssertableJson $json) =>
                 $json->has(
                     'data',
-                    TopicCommentController::MAX_ITEM_PER_PAGE,
+                    TopicCommentController::ITEMS_PER_PAGE,
                     fn ($json) =>
                     $json->where('topic_id', $topic->id)->hasAll('id', 'comment_id', 'comment', 'plus_vote_count', 'minus_vote_count', 'created_at')
                         ->missing('ip_address')
@@ -58,7 +58,7 @@ class indexTest extends TestCase
             );
 
         // 指定データが含まれていること
-        $targetComments = TopicComment::where('topic_id', $topic->id)->oldest()->offset(0)->limit(TopicCommentController::MAX_ITEM_PER_PAGE)->get()->toArray();
+        $targetComments = TopicComment::where('topic_id', $topic->id)->oldest()->offset(0)->limit(TopicCommentController::ITEMS_PER_PAGE)->get()->toArray();
         $response->assertJsonPath('data', $targetComments);
     }
 

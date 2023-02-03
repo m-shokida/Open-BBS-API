@@ -15,11 +15,11 @@ class Topic extends Model
     use HasUlids;
 
     /**
-     * 複数代入不可能な属性
+     * 複数代入可能な属性
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = ['topic_category_id', 'title', 'body', 'ip_address'];
 
     /**
      * 配列に対して非表示にする必要がある属性
@@ -65,21 +65,14 @@ class Topic extends Model
     }
 
     /**
-     * 新トピックを生成する
+     * カテゴリにスコープを設定
      *
-     * @param int $topicCategoryId
-     * @param string $title
-     * @param string $body
-     * @param string $idAddress
-     * @return self
+     * @param [type] $query
+     * @param int $categoryId
+     * @return void
      */
-    public function createNewTopic(int $topicCategoryId, string $title, string $body, string $idAddress): self
+    public function scopeCategory($query, int $categoryId)
     {
-        return $this->create([
-            'topic_category_id' => $topicCategoryId,
-            'title' => $title,
-            'body' => $body,
-            'ip_address' => $idAddress
-        ]);
+        return $query->where('topic_category_id', $categoryId);
     }
 }

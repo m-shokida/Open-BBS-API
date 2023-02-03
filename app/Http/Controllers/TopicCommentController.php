@@ -4,20 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Topic;
 use App\Models\TopicComment;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TopicComment\StoreRequest;
-use App\Services\ImageUpload\CommentImageUploadService;
+use App\Services\TopicCommentService;
 
 class TopicCommentController extends Controller
 {
     /** ページ毎表示件数 */
-    const MAX_ITEM_PER_PAGE = 100;
+    const ITEMS_PER_PAGE = 100;
 
-    function __construct(private TopicComment $topicComment)
+    function __construct(private TopicCommentService $topicCommentService)
     {
     }
 
@@ -25,26 +23,28 @@ class TopicCommentController extends Controller
      * コメント一覧を取得する
      *
      * @param Topic $topic
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(Topic $topic)
     {
-        return response()->json($topic->topicComments()->oldest()->paginate(self::MAX_ITEM_PER_PAGE));
+        return $this->topicCommentService->getCommentsByTopic($topic->id, self::ITEMS_PER_PAGE);
     }
 
     /**
-     * 新コメントを保存する
+     * コメントを保存する
      *
      * @param StoreRequest $request
      * @return JsonResponse
      */
-    public function store(StoreRequest $request, Topic $topic, CommentImageUploadService $commentImageUploadService)
+    public function store(StoreRequest $request, Topic $topic)
     {
-        DB::transaction(function () use ($request, $topic, $commentImageUploadService) {
-            $createdComment = $this->topicComment->createNewComment($topic->id, $request->validated()['comment'], $request->ip());
-            $commentImageUploadService->upload($topic->id, $createdComment->id, $request->file('image'));
-        });
+        $commentDetail = [
+            'topic_id' => $topic->id,
+            'comment' => $request->validated()['comment'],
+            'ip_address' => $request->ip()
+        ];
 
+        $this->topicCommentService->createTopicComment($commentDetail, $request->file('image'));
         return response()->json(status: Response::HTTP_CREATED);
     }
 }

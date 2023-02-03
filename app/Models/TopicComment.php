@@ -12,11 +12,11 @@ class TopicComment extends Model
     use HasFactory;
 
     /**
-     * 複数代入不可能な属性
+     * 複数代入可能な属性
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = ['topic_id', 'comment', 'ip_address'];
 
     /**
      * 配列に対して非表示にする必要がある属性
@@ -43,6 +43,18 @@ class TopicComment extends Model
     }
 
     /**
+     * トピックにスコープを設定
+     *
+     * @param [type] $query
+     * @param [type] $topicId
+     * @return void
+     */
+    public function scopeByTopic($query, $topicId)
+    {
+        return $query->where('topic_id', $topicId);
+    }
+
+    /**
      * コメントを所有しているトピックを取得
      */
     public function topic()
@@ -58,22 +70,5 @@ class TopicComment extends Model
     protected static function newFactory()
     {
         return TopicCommentFactory::new();
-    }
-
-    /**
-     * 新コメントを生成する
-     *
-     * @param string $topicId
-     * @param string $comment
-     * @param string $ipAddress
-     * @return TopicComment
-     */
-    public function createNewComment(string $topicId, string $comment, string $ipAddress): self
-    {
-        return $this->create([
-            'topic_id' => $topicId,
-            'comment' => $comment,
-            'ip_address' => $ipAddress
-        ]);
     }
 }
