@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Topic;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Services\ImageUpload\TopicImageUploadService;
 
@@ -16,13 +15,13 @@ class TopicService
     }
 
     /**
-     * 新トピックを生成する
+     * トピックを生成する
      *
      * @param array $topicDetail
      * @param UploadedFile $image
      * @return void
      */
-    public function createNewTopic(array $topicDetail, UploadedFile $image): void
+    public function createTopic(array $topicDetail, UploadedFile $image): void
     {
         DB::transaction(function () use ($topicDetail, $image) {
             $createdTopic = $this->topic->create($topicDetail);
@@ -31,7 +30,7 @@ class TopicService
     }
 
     /**
-     * カテゴリ指定でトピックスを取得する
+     * カテゴリ毎トピックスを取得する
      *
      * @param integer $categoryId
      * @param integer $itemsPerPage
