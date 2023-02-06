@@ -10,12 +10,14 @@ use App\Services\ImageUpload\TopicImageUploadService;
 
 class TopicService
 {
-    public function __construct(private Topic $topic, private TopicImageUploadService $topicImageUploadService)
-    {
+    public function __construct(
+        private Topic $topic,
+        private TopicImageUploadService $topicImageUploadService
+    ) {
     }
 
     /**
-     * トピックを生成する
+     * トピックを追加する
      *
      * @param array $topicDetail
      * @param UploadedFile $image
@@ -39,5 +41,17 @@ class TopicService
     public function getTopicsByCategory(int $categoryId, int $itemsPerPage): LengthAwarePaginator
     {
         return $this->topic->category($categoryId)->oldest()->paginate($itemsPerPage);
+    }
+
+    /**
+     * 週毎トピックスを取得する
+     *
+     * @param integer $weeksAgo
+     * @param integer $itemsPerPage
+     * @return LengthAwarePaginator
+     */
+    public function getTopicsByWeek(int $weeksAgo, int $itemsPerPage): LengthAwarePaginator
+    {
+        return $this->topic->weeksAgo($weeksAgo)->trend()->paginate($itemsPerPage);
     }
 }

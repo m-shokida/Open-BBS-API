@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use App\Models\TopicComment;
 use App\Models\TopicCategory;
+use Illuminate\Support\Carbon;
 use Database\Factories\TopicFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -39,6 +42,17 @@ class Topic extends Model
     }
 
     /**
+     * Prepare a date for array / JSON serialization.
+     *
+     * @param  \DateTimeInterface  $date
+     * @return string
+     */
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+
+    /**
      * トピックを所有しているカテゴリを取得
      */
     public function topicCategory()
@@ -67,12 +81,37 @@ class Topic extends Model
     /**
      * カテゴリにスコープを設定
      *
-     * @param [type] $query
+     * @param Builder $query
      * @param int $categoryId
      * @return void
      */
-    public function scopeCategory($query, int $categoryId)
+    public function scopeCategory(Builder $query, int $categoryId)
     {
         return $query->where('topic_category_id', $categoryId);
+    }
+
+    /**
+     * 週にスコープを設定
+     *
+     * @param Builder $query
+     * @param integer $weeks
+     * @return void
+     */
+    public function scopeWeeksAgo(Builder $query, int $weeksAgo)
+    {
+        $fromDate = Carbon::now()->subWeeks($weeksAgo + 1)->addDays(1);
+        $toDate = Carbon::now()->subWeeks($weeksAgo);
+        return $query->whereDate('created_at', '>=', $fromDate)->whereDate('created_at', '<=', $toDate);
+    }
+
+    /**
+     * コメント数ソートにスコープを設定
+     *
+     * @param Builder $query
+     * @return void
+     */
+    public function scopeTrend(Builder $query)
+    {
+        return $query->withCount('topicComments')->orderBy('topic_comments_count', 'desc');
     }
 }
