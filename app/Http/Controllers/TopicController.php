@@ -26,7 +26,7 @@ class TopicController extends Controller
     }
 
     /**
-     * トピックを生成する
+     * トピックを追加する
      *
      * @param StoreRequest $request
      * @return JsonResponse
@@ -49,5 +49,16 @@ class TopicController extends Controller
     public function filterByCategory(TopicCategory $topicCategory)
     {
         return $this->topicService->getTopicsByCategory($topicCategory->id, self::ITEMS_PER_PAGE);
+    }
+
+    /**
+     * 週毎トピックスを取得する
+     *
+     * @param integer $weeksAgo
+     * @return JsonResponse
+     */
+    public function getTopicsByWeek(int $weeksAgo)
+    {
+        return $this->topicService->getTopicsByWeek($weeksAgo, self::ITEMS_PER_PAGE);
     }
 }

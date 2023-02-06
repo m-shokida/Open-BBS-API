@@ -28,7 +28,7 @@ class TopicFactory extends Factory
             'topic_category_id' => 1,
             'title' => fake()->title,
             'body' => fake()->text,
-            'ip_address' => '127.0.0.1'
+            'ip_address' => fake()->ipv4
         ];
     }
 }

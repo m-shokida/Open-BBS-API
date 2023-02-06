@@ -24,6 +24,7 @@ Route::prefix('topics')->controller(TopicController::class)->group(function () {
         return $topic;
     });
     Route::get('/category/{topicCategory}', 'filterByCategory');
+    Route::get('/week/{weeksAgo}', 'getTopicsByWeek');
     Route::prefix('{topic}/comments')->controller(TopicCommentController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/', 'store')->middleware('file.valid');
