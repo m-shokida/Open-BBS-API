@@ -31,14 +31,19 @@ class StoreTest extends TestCase
     {
         $oldIds = Topic::all()->pluck('id');
 
+        $params = [
+            'topic_category_id' => $topicCategoryId,
+            'title' => $title,
+            'body' => $body
+        ];
+
+        if (isset($topicImage)) {
+            $params['image'] = $topicImage;
+        }
+
         $this->postJson(
             self::API_URI,
-            [
-                'topic_category_id' => $topicCategoryId,
-                'title' => $title,
-                'body' => $body,
-                'image' => $topicImage
-            ]
+            $params
         )->assertCreated();
 
         // データが追加されているか
@@ -53,7 +58,7 @@ class StoreTest extends TestCase
         $this->assertSame($newTopic->ip_address, '127.0.0.1');
 
         // 画像が適切な場所にアップロードされているか
-        Storage::assertExists('topics/' . $newTopic->id . '/' . TopicImageUploadService::TOPIC_IMAGE_NAME . '.jpg');
+        Storage::assertExists($newTopic->image_path);
     }
 
     /**
@@ -87,6 +92,12 @@ class StoreTest extends TestCase
                 fake()->title(),
                 fake()->text(),
                 UploadedFile::fake()->image('image4.gif')
+            ],
+            'store data5' => [
+                5,
+                fake()->title(),
+                fake()->text(),
+                null
             ]
         ];
     }

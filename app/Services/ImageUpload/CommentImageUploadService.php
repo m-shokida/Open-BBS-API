@@ -10,20 +10,22 @@ class CommentImageUploadService extends ImageUploadService
     /** コメント画像ディレクトリ名 */
     const COMMENT_IMAGE_DIRECTORY = 'comments';
 
-    /**
-     * 画像をアップロードする
-     *
-     * @param string $topicId
-     * @param string $commentId
-     * @param UploadedFile $image
-     * @return void
-     */
-    public function upload(string $topicId, string $commentId, UploadedFile $image)
+    function __construct(private string $topicId, private string $topicCommentId)
     {
-        $this->put(
-            sprintf('%s/%s', $topicId, self::COMMENT_IMAGE_DIRECTORY),
-            $commentId,
-            $image
+    }
+
+    /**
+     * トピックコメント画像をアップロードする
+     *
+     * @param UploadedFile $image
+     * @return string
+     */
+    public function upload(UploadedFile $image): string
+    {
+        return parent::update(
+            sprintf('%s/%s', $this->topicId, self::COMMENT_IMAGE_DIRECTORY),
+            $image,
+            $this->topicCommentId
         );
     }
 }

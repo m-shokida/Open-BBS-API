@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('topic_category_id')->constrained();
             $table->string('title', 100);
             $table->text('body');
-            $table->string('image_url')->nullable();
+            $table->string('image_path')->nullable();
             $table->ipAddress();
             $table->timestamps();
             $table->softDeletes();

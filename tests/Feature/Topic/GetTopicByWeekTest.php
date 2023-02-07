@@ -49,7 +49,7 @@ class GetTopicByWeekTest extends TestCase
                         'data',
                         $expectedCount,
                         fn (AssertableJson $topics) =>
-                        $topics->hasAll('id', 'topic_category_id', 'title', 'body', 'image_url', 'topic_comments_count', 'created_at')
+                        $topics->hasAll('id', 'topic_category_id', 'title', 'body', 'image_path', 'topic_comments_count', 'created_at')
                     )
             );
     }

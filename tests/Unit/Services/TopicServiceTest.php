@@ -27,7 +27,7 @@ class TopicServiceTest extends TestCase
             ])->has(TopicComment::factory()->count(mt_rand(1, 10)))->count(1)->create();
         }
 
-        $this->topicService = new TopicService(new Topic(), new TopicImageUploadService());
+        $this->topicService = new TopicService(new Topic());
     }
 
     /**

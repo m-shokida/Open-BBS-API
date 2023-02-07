@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Topic;
-use App\Models\TopicComment;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
