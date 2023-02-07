@@ -10,15 +10,18 @@ class TopicImageUploadService extends ImageUploadService
     /** トピック画像名 */
     const TOPIC_IMAGE_NAME = 'topic_image';
 
+    function __construct(private string $topicId)
+    {
+    }
+
     /**
      * トピック画像をアップロードする
      *
-     * @param string $topicId
      * @param UploadedFile $image
-     * @return bool
+     * @return string
      */
-    public function upload(string $topicId, UploadedFile $image): bool
+    public function upload(UploadedFile $image): string
     {
-        return $this->put($topicId, self::TOPIC_IMAGE_NAME, $image);
+        return parent::update($this->topicId, $image, self::TOPIC_IMAGE_NAME);
     }
 }

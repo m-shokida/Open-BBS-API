@@ -5,14 +5,15 @@ namespace App\Services;
 use App\Models\Topic;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Services\ImageUpload\TopicImageUploadService;
 
 class TopicService
 {
     public function __construct(
-        private Topic $topic,
-        private TopicImageUploadService $topicImageUploadService
+        private Topic $topic
     ) {
     }
 
@@ -20,14 +21,16 @@ class TopicService
      * トピックを追加する
      *
      * @param array $topicDetail
-     * @param UploadedFile $image
+     * @param UploadedFile|null $image
      * @return void
      */
-    public function createTopic(array $topicDetail, UploadedFile $image): void
+    public function createTopic(array $topicDetail, ?UploadedFile $image): void
     {
         DB::transaction(function () use ($topicDetail, $image) {
             $createdTopic = $this->topic->create($topicDetail);
-            $this->topicImageUploadService->upload($createdTopic->id, $image);
+            if (is_null($image)) return;
+            $topicImageUploadService = App::makeWith(TopicImageUploadService::class, ['topicId' => $createdTopic->id]);
+            $createdTopic->update(['image_path' => $topicImageUploadService->upload($image)]);
         });
     }
 

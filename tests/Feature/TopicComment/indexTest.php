@@ -52,7 +52,7 @@ class indexTest extends TestCase
                     'data',
                     TopicCommentController::ITEMS_PER_PAGE,
                     fn ($json) =>
-                    $json->where('topic_id', $topic->id)->hasAll('id', 'comment_id', 'comment', 'plus_vote_count', 'minus_vote_count', 'created_at')
+                    $json->where('topic_id', $topic->id)->hasAll('id', 'comment_id', 'comment', 'image_path', 'plus_vote_count', 'minus_vote_count', 'created_at')
                         ->missing('ip_address')
                 )->hasAll('current_page', 'first_page_url', 'from', 'last_page', 'last_page_url', 'links', 'next_page_url', 'path', 'per_page', 'prev_page_url', 'to', 'total')
             );

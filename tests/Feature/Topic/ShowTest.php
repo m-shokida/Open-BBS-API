@@ -29,7 +29,7 @@ class ShowTest extends TestCase
     }
 
     /**
-     * トピック取得をテスト
+     * トピック取得テスト
      *
      * @param Closure $getTopic
      * @return void
@@ -48,7 +48,7 @@ class ShowTest extends TestCase
             'topic_category_id' => $topic['topic_category_id'],
             'title' => $topic['title'],
             'body' => $topic['body'],
-            'image_url' => $topic['image_url'],
+            'image_path' => $topic['image_path'],
             'created_at' => $topic['created_at']
         ]);
     }

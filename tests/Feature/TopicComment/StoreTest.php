@@ -33,25 +33,31 @@ class StoreTest extends TestCase
     }
 
     /**
-     * データが保存されること
+     * トピックコメントが保存されること
      *
-     * @param Closure $getTopicid
+     * @param Closure $getTopicId
      * @param string $comment
      * @param File $image
      * @return void
      * @dataProvider storing_data_provider
      */
-    public function test_store(Closure $getTopicid, string $comment, File $image)
+    public function test_store(Closure $getTopicId, string $comment, ?File $image)
     {
         $oldCommentIds = TopicComment::all()->pluck('id');
-        $topicId = $getTopicid();
+        $topicId = $getTopicId();
+
+        $params =  [
+            'comment' => $comment
+        ];
+
+        if (isset($image)) {
+            $params['image'] = $image;
+        }
 
         $this->postJson(
             sprintf(self::API_URI_FORMAT, $topicId),
-            [
-                'comment' => $comment,
-                'image' => $image,
-            ]
+            $params
+
         )->assertCreated();
 
         // データは追加されているか
@@ -67,8 +73,7 @@ class StoreTest extends TestCase
         $this->assertNull($newComment->deleted_at);
 
         // 画像が適切な場所にアップロードされているか
-        $commentImageDir = 'topics/' . $newComment->topic_id . '/' . CommentImageUploadService::COMMENT_IMAGE_DIRECTORY;
-        Storage::assertExists($commentImageDir . '/' . $newComment->id . '.jpg');
+        Storage::assertExists($newComment->image_path);
     }
 
 
@@ -88,25 +93,30 @@ class StoreTest extends TestCase
         };
 
         return [
-            'min-topic&image-ping' => [
+            'store1' => [
                 $getMinTopicId,
                 fake()->text(),
                 UploadedFile::fake()->image('ping-image.png')
             ],
-            'min-topic&image-jpg' => [
+            'store2' => [
                 $getMinTopicId,
                 fake()->text(),
                 UploadedFile::fake()->image('jpg-image.jpg')
             ],
-            'max-topic&image-jpeg' => [
+            'store3' => [
                 $getMaxTopicId,
                 fake()->text(),
                 UploadedFile::fake()->image('jpeg-image1.jpeg')
             ],
-            'max-topic&image-gif' => [
+            'store4' => [
                 $getMaxTopicId,
                 fake()->text(),
                 UploadedFile::fake()->image('gif-image1.gif')
+            ],
+            'store5' => [
+                $getMaxTopicId,
+                fake()->text(),
+                null
             ],
         ];
     }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignUlid('topic_id')->constrained();
             $table->text('comment');
+            $table->string('image_path')->nullable();
             $table->integer('plus_vote_count')->default(0);
             $table->integer('minus_vote_count')->default(0);
             $table->ipAddress();

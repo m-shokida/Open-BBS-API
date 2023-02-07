@@ -5,27 +5,30 @@ namespace App\Services;
 use App\Models\TopicComment;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Services\ImageUpload\CommentImageUploadService;
 
 class TopicCommentService
 {
-    public function __construct(private TopicComment $topicComment, private CommentImageUploadService $commentImageUploadService)
+    public function __construct(private TopicComment $topicComment)
     {
     }
 
     /**
-     * コメントを生成する
+     * コメントを追加する
      *
      * @param array $commentDetail
-     * @param UploadedFile $image
+     * @param UploadedFile|null $image
      * @return void
      */
-    public function createTopicComment(array $commentDetail, UploadedFile $image): void
+    public function createTopicComment(array $commentDetail, ?UploadedFile $image): void
     {
         DB::transaction(function () use ($commentDetail, $image) {
             $createdComment = $this->topicComment->create($commentDetail);
-            $this->commentImageUploadService->upload($commentDetail['topic_id'], $createdComment->id, $image);
+            if (is_null($image)) return;
+            $commentImageUploadService = App::makeWith(CommentImageUploadService::class, ['topicId' => $commentDetail['topic_id'], 'topicCommentId' => $createdComment->id]);
+            $createdComment->update(['image_path' => $commentImageUploadService->upload($image)]);
         });
     }
 
