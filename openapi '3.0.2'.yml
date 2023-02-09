@@ -4,9 +4,30 @@ info:
   version: "0.1"
 servers:
   - url: https://api.server.test/v1
+components:
+  schemas:
+    TopicCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: カテゴリーID
+        name:
+          type: string
+          description: カテゴリー名
+    TopicCategories:
+      type: array
+      items:
+        $ref: "#/components/schemas/TopicCategory"
 paths:
-  /test:
+  /api/topic-categories:
     get:
+      summary: トピックカテゴリー一覧を取得する
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicCategories"
+
